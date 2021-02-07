@@ -14,6 +14,20 @@ export const StoreProvider = ({children}) => {
     {nombre: 'Categoria 3', color: 'green', id: Math.random().toString(10)},
     {nombre: 'Categoria 4', color: 'yellow', id: Math.random().toString(10)},
   ]);
+  const [compradores, setCompradores] = useState([
+    {id: '000', nombre: 'Juan Díaz', email: 'j.diaz@gmail.com'},
+    {
+      id: '111',
+      nombre: 'Romina Alfonso',
+      email: 'AlfonsoRomina@gmail.com',
+    },
+    {id: '222', nombre: 'Laura Walter', email: 'laura.walter@hotmail.com'},
+    {
+      id: '333',
+      nombre: 'Servicios quimicos SRL',
+      email: 'compras@serviciosquimicos.com',
+    },
+  ]);
   const [categoriasProductos, setCategoriasProductos] = useState({});
 
   const fetchData = async () => {
@@ -68,6 +82,36 @@ export const StoreProvider = ({children}) => {
     return results;
   };
 
+  const agregarComprador = (comprador) => {
+    if (comprador.id) {
+      return;
+    }
+    const id = Date.now();
+    const newCompradores = [...compradores, {id: id, ...comprador}];
+    setCompradores(newCompradores);
+  };
+
+  const modificarComprador = (comprador) => {
+    if (
+      comprador.id &&
+      comprador.nombre.length > 1 &&
+      comprador.email.length > 1
+    ) {
+      console.log('Voy a borrar comprador ' + comprador.nombre);
+      const index = compradores.findIndex((e) => e.id === comprador.id);
+      let auxArray = compradores;
+      auxArray[index] = comprador;
+      setCompradores(auxArray);
+    }
+  };
+
+  const eliminarComprador = (id) => {
+    if (id === null) {
+      return;
+    }
+    setCompradores(compradores.filter((e) => e.id != id));
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -82,6 +126,11 @@ export const StoreProvider = ({children}) => {
         agregarProductoACategoria,
         quitarProductoDeCategoria,
         obtenerCategoriasDelProducto,
+        compradores,
+        setCompradores,
+        agregarComprador,
+        modificarComprador,
+        eliminarComprador,
       }}>
       {children}
     </StoreContext.Provider>

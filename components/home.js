@@ -52,6 +52,13 @@ export const Home = () => {
           onPress={() => navigator.navigate(screens.listaCategorias)}>
           VER CATEGORÍAS
         </Button>
+        <Button
+          style={styles.button}
+          appearance="outline"
+          status="info"
+          onPress={() => navigator.navigate(screens.compradores)}>
+          VER COMPRADORES
+        </Button>
       </View>
     </View>
   );
