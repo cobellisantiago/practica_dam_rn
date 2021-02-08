@@ -6,6 +6,7 @@ import {StoreContext} from '../context/storeContext';
 import {FlatList} from 'react-native-gesture-handler';
 import BottomSheetModal from './bottomSheetModal';
 import SeleccionarCategoria from './seleccionarCategoria';
+import SeleccionarComprador from './seleccionarComprador';
 
 const styles = StyleSheet.create({
   container: {
@@ -94,17 +95,31 @@ const styles = StyleSheet.create({
 const Detalle = ({route: {params}, ...props}) => {
   const navigator = useNavigation();
   const {producto} = params;
-  const {obtenerCategoriasDelProducto} = useContext(StoreContext);
+  const {
+    obtenerCategoriasDelProducto,
+    obtenerCompradoresDelProducto,
+  } = useContext(StoreContext);
   const categorias = obtenerCategoriasDelProducto(producto);
+  const compradores = obtenerCompradoresDelProducto(producto);
   const [categoriasModal, setCategoriasModal] = useState(false);
+  const [compradoresModal, setCompradoresModal] = useState(false);
 
   return (
     <View style={styles.container}>
       <BottomSheetModal
-        visible={categoriasModal}
-        onClosePressed={() => setCategoriasModal(false)}
-        title="Seleccionar Categoria">
-        <SeleccionarCategoria producto={producto} />
+        visible={categoriasModal || compradoresModal}
+        onClosePressed={() => {
+          setCategoriasModal(false);
+          setCompradoresModal(false);
+        }}
+        title={
+          categoriasModal ? 'Seleccionar Categoria' : 'Seleccionar Comprador'
+        }>
+        {categoriasModal ? (
+          <SeleccionarCategoria producto={producto} />
+        ) : (
+          <SeleccionarComprador producto={producto} />
+        )}
       </BottomSheetModal>
       <Text category="h4">{producto.title}</Text>
       <View style={[styles.contenedorImgPrecio]}>
@@ -147,7 +162,29 @@ const Detalle = ({route: {params}, ...props}) => {
           </View>
         )}
       />
+      <Text>Compradores:</Text>
+      <FlatList
+        data={compradores}
+        horizontal
+        renderItem={({item}) => (
+          <View
+            style={[
+              styles.chip,
+              {borderWidth: 0.8, backgroundColor: '#e7e6e1'},
+            ]}>
+            <Text>{item.nombre}</Text>
+          </View>
+        )}
+      />
       <View style={styles.form}>
+        <Button
+          appearance="outline"
+          style={styles.btnVolver}
+          onPress={() => {
+            setCompradoresModal(true);
+          }}>
+          MODIFICAR COMPRADORES
+        </Button>
         <Button
           appearance="outline"
           style={styles.btnVolver}

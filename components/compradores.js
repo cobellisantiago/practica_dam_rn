@@ -1,15 +1,37 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {Keyboard, Modal, View} from 'react-native';
+import {Keyboard, Modal, StyleSheet, View} from 'react-native';
 import {Button, Icon, Input, List, ListItem, Text} from '@ui-kitten/components';
 import {StoreContext} from '../context/storeContext';
 
+const styles = StyleSheet.create({
+  plusIcon: {width: 26, height: 26},
+  modalContainer: {
+    flex: 1,
+    marginTop: 80,
+    backgroundColor: 'white',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    padding: 24,
+  },
+  modalTitle: {marginBottom: 20, textAlign: 'center'},
+  floatingButton: {
+    position: 'absolute',
+    right: 12,
+    bottom: 12,
+    zIndex: 10,
+    elevation: 5,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
+});
+
 export const Compradores = () => {
-  const {compradores, setCompradores} = useContext(StoreContext);
+  const {compradores} = useContext(StoreContext);
   const {agregarComprador} = useContext(StoreContext);
   const {modificarComprador} = useContext(StoreContext);
   const {eliminarComprador} = useContext(StoreContext);
   const [showModal, setShowModal] = useState(false);
-  const [keyboardOpen, setKeyboardOpen] = useState(true);
   const [nuevoComprador, setNuevoComprador] = useState({
     id: null,
     nombre: null,
@@ -28,7 +50,7 @@ export const Compradores = () => {
     />
   );
   const plusIcon = () => (
-    <Icon style={{width: 26, height: 26}} fill="#FFFFFF" name="plus" />
+    <Icon style={styles.plusIcon} fill="#FFFFFF" name="plus" />
   );
 
   useEffect(() => {
@@ -54,16 +76,8 @@ export const Compradores = () => {
     return (
       <Modal animationType="slide" transparent={true} visible={showModal}>
         <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.3)'}}>
-          <View
-            style={{
-              flex: 1,
-              marginTop: 80,
-              backgroundColor: 'white',
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-              padding: 24,
-            }}>
-            <Text category="h3" style={{marginBottom: 20, textAlign: 'center'}}>
+          <View style={styles.modalContainer}>
+            <Text category="h3" style={styles.modalTitle}>
               {nuevoComprador
                 ? 'Modificar comprador'
                 : 'Agregar nuevo comprador'}
@@ -160,16 +174,7 @@ export const Compradores = () => {
     <View style={{flex: 1}}>
       <RenderModal />
       <Button
-        style={{
-          position: 'absolute',
-          right: 12,
-          bottom: 12,
-          zIndex: 10,
-          elevation: 5,
-          width: 48,
-          height: 48,
-          borderRadius: 24,
-        }}
+        style={styles.floatingButton}
         appearance="filled"
         accessoryLeft={plusIcon}
         onPress={() => setShowModal(true)}

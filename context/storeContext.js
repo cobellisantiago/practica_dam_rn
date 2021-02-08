@@ -29,6 +29,7 @@ export const StoreProvider = ({children}) => {
     },
   ]);
   const [categoriasProductos, setCategoriasProductos] = useState({});
+  const [compradoresProductos, setCompradoresProductos] = useState({});
 
   const fetchData = async () => {
     try {
@@ -112,6 +113,49 @@ export const StoreProvider = ({children}) => {
     setCompradores(compradores.filter((e) => e.id != id));
   };
 
+  const obtenerCompradoresDelProducto = (producto) => {
+    const compradorId = Object.keys(compradoresProductos);
+    const compradoresIdDelProducto = compradorId.reduce(
+      (acc, cur) =>
+        compradoresProductos[cur].includes(producto.id) ? [...acc, cur] : acc,
+      [],
+    );
+    const results = compradores.filter((c) =>
+      compradoresIdDelProducto.includes(c.id),
+    );
+    return results;
+  };
+
+  const agregarCompradorAProducto = (comprador, producto) => {
+    if (!comprador?.id || !producto?.id) {
+      return; // No hay id de comprador o producto
+    }
+
+    const compradorProductos = compradoresProductos[comprador.id] ?? [];
+    if (!compradorProductos.includes(producto.id)) {
+      //Si no esta lo agregamos
+      const newCompradoresProductos = {
+        ...compradoresProductos,
+        [comprador.id]: [...compradorProductos, producto.id],
+      };
+      setCompradoresProductos(newCompradoresProductos);
+    }
+  };
+
+  const quitarCompradorDeProducto = (comprador, producto) => {
+    if (!comprador?.id || !producto?.id) {
+      return; // No hay id de comprador o producto
+    }
+    const compradorProductos = compradoresProductos[comprador.id] ?? [];
+    if (compradorProductos.includes(producto.id)) {
+      //Si esta lo quitamos
+      setCompradoresProductos({
+        ...compradoresProductos,
+        [comprador.id]: compradorProductos.filter((pid) => pid !== producto.id),
+      });
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -131,6 +175,9 @@ export const StoreProvider = ({children}) => {
         agregarComprador,
         modificarComprador,
         eliminarComprador,
+        obtenerCompradoresDelProducto,
+        agregarCompradorAProducto,
+        quitarCompradorDeProducto,
       }}>
       {children}
     </StoreContext.Provider>
